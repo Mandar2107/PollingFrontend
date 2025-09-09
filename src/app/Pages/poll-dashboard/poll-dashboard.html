@@ -11,16 +11,24 @@
            [(ngModel)]="searchTerm"
            placeholder="Search polls..."
            (ngModelChange)="onSearchChange($event)">
-  <select [(ngModel)]="sortColumn" (change)="changeSort(sortColumn)">
-  <option value="createdAt">Created</option>
-  <option value="question">Question</option>
-  <option value="totalVotes">Total Votes</option>
-  <option value="status">Status</option> 
-</select>
-<button (click)="changeSort(sortColumn)">
-  {{ sortDirection==='asc' ? '↑' : '↓' }}
-</button>
 
+    <!-- Status Filter -->
+    <select [(ngModel)]="statusFilter" (change)="loadPolls()">
+      <option [ngValue]="null">All</option>
+      <option value="active">Active</option>
+      <option value="expired">Expired</option>
+    </select>
+
+    <!-- Sort -->
+    <select [(ngModel)]="sortColumn" (change)="changeSort(sortColumn)">
+      <option value="createdAt">Created</option>
+      <option value="question">Question</option>
+      <option value="totalVotes">Total Votes</option>
+      <option value="status">Status</option>
+    </select>
+    <button (click)="changeSort(sortColumn)">
+      {{ sortDirection==='asc' ? '↑' : '↓' }}
+    </button>
   </div>
 
   <!-- Poll Cards -->
@@ -33,7 +41,7 @@
           <span [class.active]="isActive(poll)" [class.expired]="!isActive(poll)">
             {{ isActive(poll) ? 'Active' : 'Expired' }}
           </span>
-          <span *ngIf="poll.isVoted" style="color: #28a745; font-weight:bold; margin-left:10px;">
+          <span *ngIf="poll.isVoted" class="voted-label">
             You have voted
           </span>
         </div>

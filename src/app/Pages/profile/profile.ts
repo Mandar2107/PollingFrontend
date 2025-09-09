@@ -79,7 +79,7 @@ export class ProfileComponent implements OnInit {
 
       localStorage.setItem('loggedInUser', JSON.stringify(this.user));
 
-      
+
     }
   }
 }

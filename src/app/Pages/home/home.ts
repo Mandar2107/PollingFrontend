@@ -45,9 +45,11 @@ export class HomeComponent implements OnInit {
 
   constructor(private pollService: PollService, private cdr: ChangeDetectorRef) {}
 
-  ngOnInit(): void {
-    this.fetchPolls();
-  }
+ ngOnInit(): void {
+  this.fetchPolls();
+  this.fetchUserVisits();
+
+}
 
   fetchPolls(): void {
     this.isLoading = true;
@@ -109,6 +111,56 @@ export class HomeComponent implements OnInit {
       }
     });
   }
+@ViewChild('userVisitsChartCanvas') userVisitsChartCanvas!: ElementRef<HTMLCanvasElement>;
+userVisitsChart: Chart | null = null;
+
+
+userVisitsData: { date: string, count: number }[] = [];
+
+
+
+fetchUserVisits(): void {
+
+  const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+  this.userVisitsData = Array.from({ length: daysInMonth }, (_, i) => ({
+    date: `${i + 1}`,
+    count: Math.floor(Math.random() * 50) + 10 
+  }));
+  console.log('User Visits Data:', this.userVisitsData);
+
+  setTimeout(() => this.renderUserVisitsChart(), 100);
+}
+
+renderUserVisitsChart(): void {
+  if (this.userVisitsChart) this.userVisitsChart.destroy();
+  this.userVisitsChart = new Chart(this.userVisitsChartCanvas.nativeElement, {
+    type: 'line',
+    data: {
+      labels: this.userVisitsData.map(d => d.date),
+      datasets: [{
+        label: 'User Visits',
+        data: this.userVisitsData.map(d => d.count),
+        borderColor: '#42a5f5',
+        backgroundColor: 'rgba(66, 165, 245, 0.2)',
+        fill: true,
+        tension: 0.4,
+        pointRadius: 4
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: true },
+        tooltip: { enabled: true }
+      },
+      scales: {
+        y: { beginAtZero: true },
+        x: { title: { display: true, text: 'Day of Month' } }
+      }
+    }
+  });
+}
 
   renderVotesChart(): void {
     if (this.votesChart) this.votesChart.destroy();

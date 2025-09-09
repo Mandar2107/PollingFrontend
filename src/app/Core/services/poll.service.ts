@@ -14,6 +14,14 @@ export interface PollUpdateDto {
   expiresAt?: string;
 }
 
+// === Vote DTO ===
+export interface VoteResponseDto {
+  pollId: number;
+  pollOptionId: number;
+  optionText: string;
+  voteCount: number;
+}
+
 export interface PollDto {
   id: number;
   question: string;
@@ -51,7 +59,7 @@ export class PollService {
 
   constructor(private http: HttpClient) {}
 
-  
+
   private getAuthHeaders(): HttpHeaders {
     const token = localStorage.getItem('accessToken');
     return new HttpHeaders({ Authorization: `Bearer ${token || ''}` });
@@ -110,7 +118,10 @@ export class PollService {
     return this.http.post(`${this.voteUrl}/SubmitVote/${pollId}`, dto, { headers: this.getAuthHeaders() });
   }
 
-  getVotes(pollId: number): Observable<any> {
-    return this.http.get(`${this.voteUrl}/GetVotes/${pollId}`, { headers: this.getAuthHeaders() });
-  }
+getVotes(pollId: number): Observable<VoteResponseDto[]> {
+  return this.http.get<VoteResponseDto[]>(`${this.voteUrl}/GetVotes/${pollId}`, {
+    headers: this.getAuthHeaders()
+  });
+}
+
 }

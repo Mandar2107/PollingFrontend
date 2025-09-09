@@ -25,23 +25,9 @@ export class RegisterComponent {
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', Validators.required],
-      userName: [
-        '',
-        [
-          Validators.required,
-          Validators.pattern(/^[a-zA-Z0-9]+$/) // ✅ only alphanumeric
-        ]
-      ],
+      userName: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
-      password: [
-        '',
-        [
-          Validators.required,
-          Validators.minLength(6),
-          Validators.pattern(/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]+$/)
-          // ✅ at least 1 letter, 1 number
-        ]
-      ],
+      password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required]
     });
   }
@@ -59,24 +45,24 @@ export class RegisterComponent {
       this.loading = true;
       this.errorMessage = '';
 
-      this.authService.register(registerData).subscribe({
-        next: (response: any) => {
-          setTimeout(() => {
-            this.loading = false;
-            if (response) {
-              this.toastr.success('Registration successful!', '✅');
-              this.router.navigate(['/login']);
-            }
-          });
-        },
-        error: (err: any) => {
-          setTimeout(() => {
-            this.loading = false;
-            this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
-            this.toastr.error(this.errorMessage, '❌');
-          });
-        }
-      });
+     this.authService.register(registerData).subscribe({
+  next: (response: any) => {
+    setTimeout(() => {
+      this.loading = false;
+      if (response) {
+        this.toastr.success('Registration successful!', '✅');
+        this.router.navigate(['/login']);
+      }
+    });
+  },
+  error: (err: any) => {
+    setTimeout(() => {
+      this.loading = false;
+      this.errorMessage = err.error?.message || 'Registration failed. Please try again.';
+      this.toastr.error(this.errorMessage, '❌');
+    });
+  }
+});
 
     } else {
       this.errorMessage = 'Please fix the errors in the form.';
