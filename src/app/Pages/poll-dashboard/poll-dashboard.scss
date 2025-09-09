@@ -1,0 +1,206 @@
+.poll-dashboard {
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f6fa;
+  min-height: 100vh;
+
+  .error-message {
+    color: #dc3545;
+    background: #f8d7da;
+    padding: 10px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    font-weight: 500;
+  }
+
+  .top-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    input[type='text'] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    select {
+      padding: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      padding: 10px 15px;
+      border-radius: 6px;
+      border: none;
+      background-color: #007bff;
+      color: #fff;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background 0.2s;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+    }
+  }
+
+  .poll-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+
+    .poll-card {
+      background: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+
+      .poll-header {
+        margin-bottom: 15px;
+
+        h3 {
+          margin: 0 0 8px 0;
+          font-size: 18px;
+          color: #333;
+        }
+
+        .poll-meta {
+          font-size: 13px;
+          color: #666;
+          display: flex;
+          flex-wrap: wrap;
+          gap: 10px;
+
+          .active {
+            color: #28a745;
+            font-weight: 600;
+          }
+
+          .expired {
+            color: #dc3545;
+            font-weight: 600;
+          }
+        }
+      }
+
+      .poll-options {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        margin-bottom: 15px;
+
+        .vote-option {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          font-size: 14px;
+
+          input[type='radio'] {
+            accent-color: #007bff;
+          }
+        }
+
+        .vote-btn {
+          padding: 8px 12px;
+          border-radius: 6px;
+          border: none;
+          background-color: #007bff;
+          color: #fff;
+          cursor: pointer;
+          transition: background 0.2s;
+          align-self: flex-start;
+
+          &:hover {
+            background-color: #0056b3;
+          }
+
+          &:disabled {
+            background-color: #a1c4fd;
+            cursor: not-allowed;
+          }
+        }
+      }
+
+      .poll-results {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .result-item {
+          font-size: 14px;
+
+          .bar-container {
+            width: 100%;
+            height: 12px;
+            background: #e0e0e0;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-top: 4px;
+
+            .bar-fill {
+              width: var(--bar-width, 0%);
+              height: 100%;
+              background-color: #007bff;
+              border-radius: 6px;
+              transition: width 0.3s ease;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 25px;
+    gap: 6px;
+    flex-wrap: wrap;
+
+    button {
+      padding: 6px 10px;
+      border-radius: 4px;
+      border: none;
+      cursor: pointer;
+      background-color: #f0f0f0;
+      transition: background 0.2s;
+
+      &.active {
+        background-color: #007bff;
+        color: #fff;
+      }
+
+      &:hover:not(.active) {
+        background-color: #e0e0e0;
+      }
+
+      &:disabled {
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .top-bar {
+      flex-direction: column;
+      input[type='text'], select, button {
+        width: 100%;
+      }
+    }
+  }
+}
