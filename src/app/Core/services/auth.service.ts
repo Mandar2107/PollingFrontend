@@ -49,10 +49,19 @@ export class AuthService {
     );
 
   }
- private storeTokens(tokens: any) {
+private storeTokens(tokens: any) {
   localStorage.setItem('accessToken', tokens.token || '');
+
+  // ✅ Store username dynamically from token
+  try {
+    const decoded: any = JSON.parse(atob(tokens.token.split('.')[1]));
+    const username = decoded.FullName || decoded.userName || 'Guest';
+    localStorage.setItem('loggedInUserName', username);
+  } catch {}
+
   console.log('Token stored:', tokens.token);
 }
+
 
   register(request: RegisterRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/register`, request).pipe(
@@ -62,7 +71,7 @@ export class AuthService {
 logout() {
   console.log('AuthService logout called');
   localStorage.removeItem('accessToken');
-   localStorage.removeItem('loggedInUser');
+   localStorage.removeItem('loggedInUserName');
   // this.isAuthenticatedSubject.next(false);
 }
 

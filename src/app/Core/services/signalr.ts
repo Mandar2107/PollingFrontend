@@ -19,7 +19,7 @@ export class PollSignalRService {
         accessTokenFactory: () => localStorage.getItem('accessToken') || ''
       })
       .withAutomaticReconnect()
-      .configureLogging(signalR.LogLevel.Information) // 👈 log all details
+      .configureLogging(signalR.LogLevel.Information)
       .build();
 
     this.hubConnection
@@ -28,10 +28,12 @@ export class PollSignalRService {
       .catch(err => console.error('❌ SignalR connection failed: ', err));
 
     // Listen to server events
-    this.hubConnection.on('ReceivePollUpdate', (poll: PollDto) => {
-      console.log('📩 Poll update received from SignalR:', poll);
-      this.pollUpdatesSource.next(poll);
-    });
+   this.hubConnection.on('receivepollupdate', (poll: PollDto) => {
+  console.log('📩 Poll update received from SignalR (proper case):', poll);
+  this.pollUpdatesSource.next(poll);
+});
+
+
 
     // Connection close
     this.hubConnection.onclose(error => {

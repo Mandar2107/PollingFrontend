@@ -39,17 +39,17 @@ export class HomeComponent implements OnInit {
 
   @ViewChild('pollChartCanvas') pollChartCanvas!: ElementRef<HTMLCanvasElement>;
   @ViewChild('votesChartCanvas') votesChartCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pollsPerDayChartCanvas') pollsPerDayChartCanvas!: ElementRef<HTMLCanvasElement>;
 
   chart: Chart | null = null;
   votesChart: Chart | null = null;
+  pollsPerDayChart: Chart | null = null;
 
   constructor(private pollService: PollService, private cdr: ChangeDetectorRef) {}
 
- ngOnInit(): void {
-  this.fetchPolls();
-  this.fetchUserVisits();
-
-}
+  ngOnInit(): void {
+    this.fetchPolls();
+  }
 
   fetchPolls(): void {
     this.isLoading = true;
@@ -66,9 +66,11 @@ export class HomeComponent implements OnInit {
 
         this.isLoading = false;
         this.cdr.detectChanges();
+
         setTimeout(() => {
           this.renderStatusChart();
           this.renderVotesChart();
+          this.generatePollsPerDayData();
         }, 100);
       },
       error: () => {
@@ -111,56 +113,6 @@ export class HomeComponent implements OnInit {
       }
     });
   }
-@ViewChild('userVisitsChartCanvas') userVisitsChartCanvas!: ElementRef<HTMLCanvasElement>;
-userVisitsChart: Chart | null = null;
-
-
-userVisitsData: { date: string, count: number }[] = [];
-
-
-
-fetchUserVisits(): void {
-
-  const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
-  this.userVisitsData = Array.from({ length: daysInMonth }, (_, i) => ({
-    date: `${i + 1}`,
-    count: Math.floor(Math.random() * 50) + 10 
-  }));
-  console.log('User Visits Data:', this.userVisitsData);
-
-  setTimeout(() => this.renderUserVisitsChart(), 100);
-}
-
-renderUserVisitsChart(): void {
-  if (this.userVisitsChart) this.userVisitsChart.destroy();
-  this.userVisitsChart = new Chart(this.userVisitsChartCanvas.nativeElement, {
-    type: 'line',
-    data: {
-      labels: this.userVisitsData.map(d => d.date),
-      datasets: [{
-        label: 'User Visits',
-        data: this.userVisitsData.map(d => d.count),
-        borderColor: '#42a5f5',
-        backgroundColor: 'rgba(66, 165, 245, 0.2)',
-        fill: true,
-        tension: 0.4,
-        pointRadius: 4
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true },
-        tooltip: { enabled: true }
-      },
-      scales: {
-        y: { beginAtZero: true },
-        x: { title: { display: true, text: 'Day of Month' } }
-      }
-    }
-  });
-}
 
   renderVotesChart(): void {
     if (this.votesChart) this.votesChart.destroy();
@@ -168,30 +120,45 @@ renderUserVisitsChart(): void {
     const votes = this.polls.map(p => p.options.reduce((sum, o) => sum + o.voteCount, 0));
     this.votesChart = new Chart(this.votesChartCanvas.nativeElement, {
       type: 'bar',
+      data: { labels, datasets: [{ label: 'Total Votes', data: votes, backgroundColor: '#42a5f5' }] },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { datalabels: { color: '#000', anchor: 'end', align: 'top', formatter: (value: number) => value }, legend: { display: false } },
+        scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } }
+      }
+    });
+  }
+
+  generatePollsPerDayData() {
+    const daysInMonth = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0).getDate();
+    const labels = Array.from({ length: daysInMonth }, (_, i) => `${i + 1}`);
+    const data = Array.from({ length: daysInMonth }, () => Math.floor(Math.random() * 5));
+
+    if (this.pollsPerDayChart) this.pollsPerDayChart.destroy();
+    this.pollsPerDayChart = new Chart(this.pollsPerDayChartCanvas.nativeElement, {
+      type: 'line',
       data: {
         labels,
         datasets: [{
-          label: 'Total Votes',
-          data: votes,
-          backgroundColor: '#42a5f5'
+          label: 'Polls Created',
+          data,
+          borderColor: '#ff9800',
+          backgroundColor: 'rgba(255,152,0,0.2)',
+          fill: true,
+          tension: 0.3,
         }]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
-        plugins: {
-          datalabels: {
-            color: '#000',
-            anchor: 'end',
-            align: 'top',
-            formatter: (value: number) => value
-          },
-          legend: { display: false }
-        },
         scales: {
-          y: { beginAtZero: true, ticks: { stepSize: 1 } }
-        }
+          y: { beginAtZero: true },
+          x: { title: { display: true, text: 'Day of Month' } }
+        },
+        plugins: { legend: { display: true } }
       }
     });
   }
+
 }

@@ -1,9 +1,10 @@
+import { PollSignalRService } from './../../Core/services/signalr';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { PollService, PollDto } from '../../Core/services/poll.service';
-import { PollSignalRService } from '../../Core/services/signalr';
+
 
 @Component({
   selector: 'app-poll-dashboard',
@@ -31,29 +32,32 @@ export class PollDashboardComponent implements OnInit, OnDestroy {
   errorMessage = '';
 
   private searchTimeout: number | undefined;
-  private pollUpdatesSubscription: Subscription | undefined;
 
-  constructor(private pollService: PollService, private signalRService: PollSignalRService) {}
+
+  constructor(private pollService: PollService, private pollSignalRService: PollSignalRService) {}
 
   ngOnInit(): void {
     this.loadPolls();
+  this.pollSignalRService.startConnection();
 
-    this.signalRService.startConnection();
-
-    this.pollUpdatesSubscription = this.signalRService.pollUpdates$.subscribe(updatedPoll => {
-      if (updatedPoll) {
-            console.log('SignalR update received:', updatedPoll);
-        const index = this.polls.findIndex(p => p.id === updatedPoll.id);
-        if (index > -1) {
-          this.polls[index] = updatedPoll;
-        }
+  this.pollSignalRService.pollUpdates$.subscribe(updatedPoll => {
+    if (updatedPoll) {
+      const index = this.polls.findIndex(p => p.id === updatedPoll.id);
+      if (index > -1) {
+        this.polls[index] = updatedPoll; // update existing
+      } else {
+        this.polls.push(updatedPoll); // add new poll if missing
       }
-    });
-  }
+    }
+  });
+this.loadPolls();
+}
+
 
   ngOnDestroy(): void {
-    this.pollUpdatesSubscription?.unsubscribe();
-    // optional if your service has stopConnection
+    if (this.searchTimeout) {
+      clearTimeout(this.searchTimeout);
+    }
   }
 
   loadPolls(): void {

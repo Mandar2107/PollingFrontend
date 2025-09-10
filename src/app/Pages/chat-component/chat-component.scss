@@ -1,0 +1,16 @@
+.chat-container {
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 300px;
+}
+
+.messages {
+  height: 200px;
+  overflow-y: auto;
+  margin-bottom: 10px;
+}
+
+.input {
+  display: flex;
+  gap: 5px;
+}

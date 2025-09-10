@@ -1,17 +1,26 @@
 <div class="landing-container">
+  <!-- Background Carousel -->
+  <div class="bg-carousel">
+    <div class="bg-slide" *ngFor="let slide of slides; let i = index">
+      <img [src]="slide.image" [alt]="slide.caption" [class.active]="i === currentSlide" />
+    </div>
+  </div>
+
+  <!-- Overlay for content -->
   <div class="overlay">
+    <!-- Navbar -->
     <nav class="navbar">
       <div class="logo">
-        <img src="https://tse4.mm.bing.net/th/id/OIP.F2oEM9PlLc-gcsBO-4aTBwHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3" alt="PollMaster Logo" />
+        <img src="https://tse4.mm.bing.net/th/id/OIP.F2oEM9PlLc-gcsBO-4aTBwHaHa" alt="PollMaster Logo" />
         <h1>Thinko</h1>
       </div>
       <div class="nav-buttons">
         <button routerLink="/login" class="btn login-btn">Login</button>
         <button routerLink="/register" class="btn register-btn">Register</button>
-                <!-- <button routerLink="/auth-slider" class="btn register-btn">Register</button> -->
       </div>
     </nav>
 
+    <!-- Hero Section -->
     <div class="hero">
       <div class="hero-text">
         <h2 class="fade-in">Welcome to <span>Thinko</span></h2>
@@ -21,13 +30,16 @@
           <button routerLink="/about" class="btn secondary-btn">Learn More</button>
         </div>
       </div>
+
+      <!-- Floating Poll Image -->
       <div class="hero-image">
         <img src="https://s.w.nunify.com/20/22/Funny_poll_questions_lists_f9e0909965.jpg" alt="Poll illustration" />
       </div>
     </div>
-    <footer class="footer">
-  <p>© 2025 Polling App. All rights reserved.</p>
-</footer>
 
+    <!-- Footer -->
+    <footer class="footer">
+      <p>© 2025 Polling App. All rights reserved.</p>
+    </footer>
   </div>
 </div>

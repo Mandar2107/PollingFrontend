@@ -8,24 +8,43 @@
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
       <h2>Create Account</h2>
 
-      <div class="form-group">
+      <div class="form-group" [class.invalid]="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
         <input type="text" formControlName="fullName" placeholder="Full Name" />
+        <div class="error" *ngIf="registerForm.get('fullName')?.touched && registerForm.get('fullName')?.invalid">
+          Full Name is required.
+        </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [class.invalid]="registerForm.get('userName')?.touched && registerForm.get('userName')?.invalid">
         <input type="text" formControlName="userName" placeholder="Username" />
+        <div class="error" *ngIf="registerForm.get('userName')?.touched && registerForm.get('userName')?.invalid">
+          Username is required.
+        </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [class.invalid]="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
         <input type="email" formControlName="email" placeholder="Email" />
+        <div class="error" *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid">
+          <span *ngIf="registerForm.get('email')?.errors?.['required']">Email is required.</span>
+          <span *ngIf="registerForm.get('email')?.errors?.['email']">Enter a valid email.</span>
+        </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [class.invalid]="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
         <input type="password" formControlName="password" placeholder="Password" />
+        <div class="error" *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid">
+          <span *ngIf="registerForm.get('password')?.errors?.['required']">Password is required.</span>
+          <span *ngIf="registerForm.get('password')?.errors?.['minlength']">
+            Password must be at least 6 characters.
+          </span>
+        </div>
       </div>
 
-      <div class="form-group">
+      <div class="form-group" [class.invalid]="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value">
         <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" />
+        <div class="error" *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.get('confirmPassword')?.value !== registerForm.get('password')?.value">
+          Passwords do not match.
+        </div>
       </div>
 
       <button type="submit" class="btn primary-btn" [disabled]="loading">
@@ -33,13 +52,12 @@
       </button>
     </form>
 
-    <!-- Error Message -->
+    <!-- Error Message from Server -->
     <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
 
     <!-- Login Redirect -->
     <p class="login-text">
-      Already have an account?
-      <a routerLink="/login">Login here</a>
+      Already have an account? <a routerLink="/login">Login here</a>
     </p>
   </div>
 </div>

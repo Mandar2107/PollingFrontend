@@ -2,6 +2,8 @@ import { Component, HostListener, OnInit } from '@angular/core';
 import { Router, NavigationEnd, RouterModule } from '@angular/router';
 import { AuthService } from '../../Core/services/auth.service';
 import { filter } from 'rxjs/operators';
+import { ChatComponent } from "../chat-component/chat-component";
+import { CommonModule } from '@angular/common';
 
 interface UserProfile {
   username: string;
@@ -12,7 +14,7 @@ interface UserProfile {
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [RouterModule],
+  imports: [RouterModule, ChatComponent ,CommonModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.scss']
 })
@@ -45,6 +47,13 @@ dropdownOpen = false;
 toggleDropdown() {
   this.dropdownOpen = !this.dropdownOpen;
 }
+showChat = false;
+
+  // toggle chat panel
+  toggleChat() {
+    this.showChat = !this.showChat;
+  }
+
 
 // Close dropdown if clicked outside
 @HostListener('document:click', ['$event'])
